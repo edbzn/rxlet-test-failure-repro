@@ -1,0 +1,147 @@
+{
+  "version": 1,
+  "cli": {
+    "defaultCollection": "@nrwl/angular"
+  },
+  "defaultProject": "repro",
+  "schematics": {
+    "@nrwl/angular": {
+      "application": {
+        "linter": "eslint"
+      },
+      "library": {
+        "linter": "eslint"
+      },
+      "storybook-configuration": {
+        "linter": "eslint"
+      }
+    },
+    "@nrwl/angular:application": {
+      "style": "css",
+      "linter": "eslint",
+      "unitTestRunner": "jest",
+      "e2eTestRunner": "cypress"
+    },
+    "@nrwl/angular:library": {
+      "style": "css",
+      "linter": "eslint",
+      "unitTestRunner": "jest"
+    },
+    "@nrwl/angular:component": {
+      "style": "css"
+    }
+  },
+  "projects": {
+    "repro": {
+      "projectType": "application",
+      "root": "apps/repro",
+      "sourceRoot": "apps/repro/src",
+      "prefix": "rxlet-failing-test-repro",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/apps/repro",
+            "index": "apps/repro/src/index.html",
+            "main": "apps/repro/src/main.ts",
+            "polyfills": "apps/repro/src/polyfills.ts",
+            "tsConfig": "apps/repro/tsconfig.app.json",
+            "aot": true,
+            "assets": ["apps/repro/src/favicon.ico", "apps/repro/src/assets"],
+            "styles": ["apps/repro/src/styles.css"],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/repro/src/environments/environment.ts",
+                  "with": "apps/repro/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "repro:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "repro:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "repro:build"
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "apps/repro/src/**/*.ts",
+              "apps/repro/src/**/*.html"
+            ]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/apps/repro"],
+          "options": {
+            "jestConfig": "apps/repro/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "repro-e2e": {
+      "root": "apps/repro-e2e",
+      "sourceRoot": "apps/repro-e2e/src",
+      "projectType": "application",
+      "architect": {
+        "e2e": {
+          "builder": "@nrwl/cypress:cypress",
+          "options": {
+            "cypressConfig": "apps/repro-e2e/cypress.json",
+            "tsConfig": "apps/repro-e2e/tsconfig.e2e.json",
+            "devServerTarget": "repro:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "repro:serve:production"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["apps/repro-e2e/**/*.{js,ts}"]
+          }
+        }
+      }
+    }
+  }
+}
