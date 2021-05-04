@@ -1,0 +1,15 @@
+
+<div *rxLet="state$ as state">
+  {{ state }}
+</div>
+
+<!-- Btw the following is working:
+  <div *ngIf="state$ | async as state">
+  {{ state }}
+</div>
+-->
+
+<!-- And this is also working:
+<div *ngIf="state$ | push as state">
+  {{ state }}
+</div> -->
